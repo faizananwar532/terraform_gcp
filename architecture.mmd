@@ -1,0 +1,41 @@
+graph TD
+    subgraph "Storage"
+        A[Backend Bucket<br>apriltfbackend] --> |Stores| A1[Terraform State]
+        B[Static Site Bucket<br>devops-static-site-april14] --> |Hosts| B1[index.html]
+    end
+    
+    subgraph "Networking"
+        C[VPC Network<br>april-vpc-network]
+        D[Subnet<br>april-subnetwork<br>10.2.0.0/16]
+        C --> D
+        D --> |Secondary Range| D1[192.168.10.0/24]
+    end
+    
+    subgraph "Compute"
+        E[VM 1<br>e2-micro]
+        F[VM 2<br>e2-micro]
+        G[GKE Cluster<br>Private Cluster<br>2 nodes]
+    end
+    
+    subgraph "Container Services"
+        H[Artifact Registry<br>april14]
+        I[Cloud Run Service<br>hello-cloud-run]
+        H --> |Stores image| I
+    end
+    
+    D --> E
+    D --> F
+    D --> G
+    I --> |Public access| J[Internet Users]
+    
+    classDef storage fill:#f9d3a6,stroke:#333,stroke-width:1px
+    classDef network fill:#a6d3f9,stroke:#333,stroke-width:1px
+    classDef compute fill:#d3f9a6,stroke:#333,stroke-width:1px
+    classDef container fill:#d3a6f9,stroke:#333,stroke-width:1px
+    classDef users fill:#f9a6d3,stroke:#333,stroke-width:1px
+    
+    class A,B storage
+    class C,D,D1 network
+    class E,F,G compute
+    class H,I container
+    class J users
